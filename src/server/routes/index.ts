@@ -52,27 +52,27 @@ router.delete(
 
 // People routes
 router.get(
-    "/pessoas",
+    "/people",
     PeopleController.getAllValidation,
     PeopleController.getAll,
 );
 router.get(
-    "/pessoas/:id",
+    "/people/:id",
     PeopleController.getByIdValidation,
     PeopleController.getById,
 );
 router.post(
-    "/pessoas",
+    "/people",
     PeopleController.createValidation,
     PeopleController.create,
 );
 router.put(
-    "/pessoas/:id",
+    "/people/:id",
     PeopleController.updateByIdValidation,
     PeopleController.updateById,
 );
 router.delete(
-    "/pessoas/:id",
+    "/people/:id",
     PeopleController.deleteByIdValidation,
     PeopleController.deleteById,
 );
