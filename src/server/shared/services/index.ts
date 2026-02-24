@@ -1,1 +1,1 @@
-export * from "../middleware/PasswordCrypto";
+export * from "./PasswordCrypto";

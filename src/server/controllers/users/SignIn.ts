@@ -5,7 +5,7 @@ import * as yup from "yup";
 import { UsersProvider } from "../../database/providers/users";
 import { validation } from "../../shared/middleware/Validation";
 import { IUser } from "../../database/models";
-import { PasswordCrypto } from "../../shared/middleware/PasswordCrypto";
+import { PasswordCrypto } from "../../shared/services/PasswordCrypto";
 
 interface IBodyProps extends Omit<IUser, "id" | "name"> {}
 export const signInValidation = validation((getSchema) => ({
