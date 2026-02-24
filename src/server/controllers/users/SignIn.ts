@@ -5,6 +5,7 @@ import * as yup from "yup";
 import { UsersProvider } from "../../database/providers/users";
 import { validation } from "../../shared/middleware/Validation";
 import { IUser } from "../../database/models";
+import { PasswordCrypto } from "../../shared/middleware/PasswordCrypto";
 
 interface IBodyProps extends Omit<IUser, "id" | "name"> {}
 export const signInValidation = validation((getSchema) => ({
@@ -31,7 +32,11 @@ export const signIn = async (
         });
     }
 
-    if (password !== result.password) {
+    const passwordMatch = await PasswordCrypto.verifyPassword(
+        password,
+        result.password,
+    );
+    if (!passwordMatch) {
         return res.status(StatusCodes.UNAUTHORIZED).json({
             errors: {
                 default: "Email or password are invalid",
