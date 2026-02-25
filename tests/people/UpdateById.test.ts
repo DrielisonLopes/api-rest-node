@@ -1,27 +1,32 @@
 import { StatusCodes } from "http-status-codes";
 
 import { testServer } from "../jest.setup";
+import { createAuthenticatedUser } from "../helpers/auth";
+import { createTestCity } from "../helpers/cities";
 
 describe("People - UpdateById", () => {
     let cityId: number | undefined = undefined;
-    beforeAll(async () => {
-        const resCidade = await testServer
-            .post("/cities")
-            .send({ name: "Teste" });
+    let accessToken = "";
 
-        cityId = resCidade.body;
+    beforeAll(async () => {
+        accessToken = await createAuthenticatedUser();
+        cityId = await createTestCity(accessToken);
     });
 
     it("Atualiza registro", async () => {
-        const res1 = await testServer.post("/people").send({
-            cityId,
-            fullName: "Juca silva",
-            email: "jucaupdate@gmail.com",
-        });
+        const res1 = await testServer
+            .post("/people")
+            .set("Authorization", `Bearer ${accessToken}`)
+            .send({
+                cityId,
+                fullName: "Juca silva",
+                email: "jucaupdate@gmail.com",
+            });
         expect(res1.statusCode).toEqual(StatusCodes.CREATED);
 
         const resAtualizada = await testServer
             .put(`/people/${res1.body}`)
+            .set("Authorization", `Bearer ${accessToken}`)
             .send({
                 cityId,
                 fullName: "Juca silva",
@@ -30,11 +35,14 @@ describe("People - UpdateById", () => {
         expect(resAtualizada.statusCode).toEqual(StatusCodes.NO_CONTENT);
     });
     it("Tenta atualizar registro que não existe", async () => {
-        const res1 = await testServer.put("/people/99999").send({
-            cityId,
-            email: "juca@gmail.com",
-            fullName: "Juca silva",
-        });
+        const res1 = await testServer
+            .put("/people/99999")
+            .set("Authorization", `Bearer ${accessToken}`)
+            .send({
+                cityId,
+                email: "juca@gmail.com",
+                fullName: "Juca silva",
+            });
 
         expect(res1.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
         expect(res1.body).toHaveProperty("errors.default");
